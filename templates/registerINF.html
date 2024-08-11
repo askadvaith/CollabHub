@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Influencer Registration</title>
+
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
+    <link href="https://fonts.googleapis.com/css2?family=PT+Sans+Narrow&display=swap" rel="stylesheet">
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            font-family: 'PT Sans Narrow', sans-serif;
+            background-color: #f8f9fa;
+        }
+        .registration-container {
+            padding: 20px;
+            max-width: 900px;
+            margin: 0 auto;
+            background-color: #fff;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            margin-top: 30px;
+        }
+        .navbar {
+            margin-bottom: 20px;
+        }
+        .profile-pic {
+            width: 100px;
+            height: 100px;
+            background-color: #d4f8c4;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+        .profile-pic img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .profile-info {
+            margin-left: 20px;
+        }
+        .form-group img {
+            width: 100%;
+            height: auto;
+            border-radius: 10px;
+            object-fit: cover;
+        }
+        .form-group input[type="file"] {
+            display: none;
+        }
+        .form-group label {
+            cursor: pointer;
+        }
+
+        .social-media-group {
+            display: flex;
+            align-items: center;
+        }
+
+        .social-media-group .icon {
+            font-size: 1.5rem;
+            margin-right: 10px;
+            color: #6c757d; /* Default color */
+            transition: color 0.3s;
+        }
+
+        .social-media-group .icon.active {
+            color: #007bff; /* Blue color when active */
+        }
+    </style>
+    <script>
+        function previewImage(event) {
+            const reader = new FileReader();
+            reader.onload = function(){
+                const output = document.getElementById('profilePicPreview');
+                output.src = reader.result;
+            };
+            reader.readAsDataURL(event.target.files[0]);
+        }
+
+        function handleSubmit(event) {
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('newPassword').value;
+
+            if (password !== confirmPassword) {
+                event.preventDefault(); // Prevent form from submitting
+                alert('Passwords do not match. Please try again.');
+                window.location.reload(); // Refresh the page
+            } else {
+                $('#confirmationModal').modal('show'); // Show the modal
+            }
+        }
+
+    document.addEventListener('DOMContentLoaded', function() {
+    const fields = document.querySelectorAll('.form-control');
+
+    fields.forEach(field => {
+        field.addEventListener('input', function() {
+            const icon = this.previousElementSibling;
+            if (this.value.trim() !== '') {
+                icon.classList.add('active');
+            } else {
+                icon.classList.remove('active');
+            }
+        });
+    });
+});
+
+    </script>
+
+</head>
+<body>
+    <div class="registration-container">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <a class="navbar-brand" href="#">Influencer's Dashboard</a>
+            <div class="collapse navbar-collapse">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item active">
+                        <a class="nav-link" href="#">Register</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/loginINF">Login</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+        <div class="d-flex mb-4">
+            <div class="profile-pic">
+                <img id="profilePicPreview" src="https://via.placeholder.com/100" alt="Profile Picture Preview">
+            </div>
+            <div class="profile-info">
+                <h4>Register as an Influencer</h4>
+            </div>
+        </div>
+
+        <form id="registrationForm" action="{{ url_for('registerINF') }}" method="post" enctype="multipart/form-data" onsubmit="handleSubmit(event)">
+            <div class="form-group">
+                <label for="imageUpload" class="btn btn-primary">Upload Image</label>
+                <input type="file" id="imageUpload" name="image" accept="image/*" onchange="previewImage(event)">
+            </div>
+
+            <div class="form-group">
+                <label for="name">Name</label>
+                <input type="text" class="form-control" id="name" name="name" required>
+            </div>
+
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" class="form-control" id="username" name="username" required>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" class="form-control" id="password" name="password" required>
+            </div>
+
+            <div class="form-group">
+                <label for="newPassword">Confirm Password</label>
+                <input type="password" class="form-control" id="newPassword" name="cnfPassword" required>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email ID</label>
+                <input type="email" class="form-control" id="email" name="email" required>
+            </div>
+
+            <div class="form-group">
+                <label for="mobileNumber">Mobile Number</label>
+                <input type="tel" class="form-control" id="mobileNumber" name="mobile" required>
+            </div>
+
+            <div class="form-group">
+                <label for="reach">Reach</label>
+                <input type="text" class="form-control" id="reach" name="reach" required>
+            </div>
+
+
+            <div class="form-group">
+                <label>Social Media Links</label>
+                <div class="social-media-group">
+                    <span class="icon"><i class="fab fa-twitter"></i></span>
+                    <input type="url" class="form-control" name="twitter" placeholder="Twitter Profile URL">
+                </div>
+                <div class="social-media-group mt-2">
+                    <span class="icon"><i class="fab fa-youtube"></i></span>
+                    <input type="url" class="form-control" name="youtube" placeholder="YouTube Channel URL">
+                </div>
+                <div class="social-media-group mt-2">
+                    <span class="icon"><i class="fab fa-instagram"></i></span>
+                    <input type="url" class="form-control" name="instagram" placeholder="Instagram Profile URL">
+                </div>
+                <div class="social-media-group mt-2">
+                    <span class="icon"><i class="fab fa-facebook"></i></span>
+                    <input type="url" class="form-control" name="facebook" placeholder="Facebook Page URL">
+                </div>
+                <div class="social-media-group mt-2">
+                    <span class="icon"><i class="fab fa-tiktok"></i></span>
+                    <input type="url" class="form-control" name="tiktok" placeholder="TikTok Profile URL">
+                </div>
+                <div class="social-media-group mt-2">
+                    <span class="icon"><i class="fab fa-twitch"></i></span>
+                    <input type="url" class="form-control" name="twitch" placeholder="Twitch Channel URL">
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Register</button>
+        </form>
+    </div>
+
+
+    <div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="confirmationModalLabel">Registration Successful</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    Your registration has been submitted successfully. We will review your information and get back to you soon.
+                </div>
+                <div class="modal-footer">
+                    <a href="/loginINF" class="btn btn-primary">Go to Login</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/js/all.min.js"></script>
+</body>
+</html>

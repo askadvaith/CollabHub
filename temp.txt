@@ -1,0 +1,41 @@
+class Sponsor(Base):
+    __tablename__ = 'Sponsors'
+    SponsorName = Column(String)
+    SponsorID = Column(String, unique=True, primary_key=True)
+    Email = Column(String, unique=True)
+    PhoneNumber = Column(Integer, unique=True)
+    CampaignsList = Column(String, nullable=True)
+    CampaignsNegotiation = Column(String, nullable=True)
+    CampaignsNotAccepted = Column(String, nullable=True)
+    Password = Column(String)
+    CampaignIdList = Column(String, nullable=True)
+    PhotoPath = Column(String)
+
+class Campaign(Base):
+    __tablename__ = 'Campaign'
+
+    CampaignID = Column(Integer, primary_key=True, autoincrement=True, unique=True)
+    CampaignName = Column(Text)
+    Category = Column(Text)
+    AdvertisementLists = Column(Text)
+
+    advertisements = relationship("Advertisement", back_populates="campaign")
+
+class Advertisement(Base):
+    __tablename__ = 'Advertisements'
+
+    AdID = Column(Text, primary_key=True, unique=True)
+    CampaignID = Column(Integer, ForeignKey('Campaign.CampaignID'))
+    SpnUsername = Column(Text, ForeignKey('Sponsors.SponsorID'))
+    Status = Column(Text)
+    InfID = Column(Text, ForeignKey('Influencers.Username'))
+    Messages = Column(Text)
+    Requirements = Column(Text)
+    Payment = Column(Numeric)
+    Tasks = Column(Text)
+    TotalTaskCount = Column(Integer)
+    TasksCompleted = Column(Integer)
+
+    campaign = relationship("Campaign", back_populates="advertisements")
+    influencer = relationship("Influencer", back_populates="advertisements")
+    sponsor = relationship("Sponsor", back_populates="advertisements")

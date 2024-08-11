@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Campaign</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=PT+Sans+Narrow&display=swap" rel="stylesheet">
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            font-family: 'PT Sans Narrow', sans-serif;
+            background-color: #f8f9fa;
+        }
+        .form-container {
+            padding: 20px;
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #fff;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h2>Add a New Campaign</h2>
+        <form method="POST">
+            <div class="form-group">
+                <label for="campaign_name">Campaign Name:</label>
+                <input type="text" class="form-control" id="campaign_name" name="campaign_name" required>
+            </div>
+            <div class="form-group">
+                <label for="industry">Industry:</label>
+                <select class="form-control" id="industry" name="industry" required>
+                    <option value="" disabled selected>Select Industry</option>
+                    <option value="Technology">Technology</option>
+                    <option value="Health & Wellness">Health & Wellness</option>
+                    <option value="Fashion">Fashion</option>
+                    <option value="Food & Beverage">Food & Beverage</option>
+                    <option value="Travel">Travel</option>
+                    <option value="Entertainment">Entertainment</option>
+                    <option value="Finance">Finance</option>
+                    <option value="Education">Education</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="num_ads">Number of Advertisements:</label>
+                <input type="number" class="form-control" id="num_ads" name="num_ads" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Next</button>
+        </form>
+    </div>
+</body>
+</html>

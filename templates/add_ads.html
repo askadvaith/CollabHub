@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Advertisements</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=PT+Sans+Narrow&display=swap" rel="stylesheet">
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            font-family: 'PT Sans Narrow', sans-serif;
+            background-color: #f8f9fa;
+        }
+        .form-container {
+            padding: 20px;
+            max-width: 900px;
+            margin: 0 auto;
+            background-color: #fff;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h2>Add Advertisements for {{ campaign_name }}</h2>
+        <form method="POST">
+            {% for i in range(num_ads) %}
+            <h4>Advertisement {{ i+1 }}</h4>
+            <div class="form-group">
+                <label for="ad_name_{{i}}">Advertisement Name:</label>
+                <input type="text" class="form-control" id="ad_name_{{i}}" name="ad_name_{{i}}" required>
+            </div>
+            <div class="form-group">
+                <label for="num_tasks_{{i}}">Total Number of Tasks:</label>
+                <input type="number" class="form-control" id="num_tasks_{{i}}" name="num_tasks_{{i}}" required>
+            </div>
+            <div class="form-group">
+                <label for="task_details_{{i}}">Task Details:</label>
+                <textarea class="form-control" id="task_details_{{i}}" name="task_details_{{i}}" rows="3" required></textarea>
+            </div>
+            <div class="form-group">
+                <label for="earning_{{i}}">Earnings (in Rs.):</label>
+                <input type="number" class="form-control" id="earning_{{i}}" name="earning_{{i}}" step="0.01" required>
+            </div>
+            <hr>
+            {% endfor %}
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+</body>
+</html>

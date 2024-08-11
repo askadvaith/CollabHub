@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Influencer's Dashboard</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=PT+Sans+Narrow&display=swap" rel="stylesheet">
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            font-family: 'PT Sans Narrow', sans-serif;
+            background-color: #f8f9fa;
+        }
+        .dashboard-container {
+            padding: 20px;
+            max-width: 900px;
+            margin: 0 auto;
+            background-color: #fff;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            margin-top: 30px;
+        }
+        .navbar {
+            margin-bottom: 20px;
+        }
+        .profile-pic {
+            width: 100px;
+            height: 100px;
+            background-color: #d4f8c4;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        .campaign {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        .campaign-progress {
+            width: 100%;
+            margin-right: 10px;
+        }
+        .action-buttons .btn {
+            margin-left: 5px;
+        }
+        .profile-info {
+            margin-left: 20px;
+        }
+        .modal-body {
+            padding: 20px;
+        }
+        .task-item {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <a class="navbar-brand" href="#">Influencer's Dashboard</a>
+            <div class="collapse navbar-collapse">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item active">
+                        <a class="nav-link" href="#">Profile</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('searchINF') }}">Find</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Stats</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+        <div class="d-flex">
+            <div class="profile-pic">
+                <img src="{{ influencer.PhotoPath }}" alt="Candidate Photo" style="width:100%; height:100%; object-fit: cover; border-radius: 15px;">
+            </div>
+            <div class="profile-info">
+                <h4>Welcome, {{ influencer.Name }}</h4>
+                <p>Rating: {{ influencer.Rating | int }}</p>
+                <p>Earnings this month: Rs. {{ influencer.Earnings | int }}</p>
+            </div>
+        </div>
+        
+        <hr>
+        
+        <h5>Active Campaigns:</h5>
+        {% for ad in accepted_ads %}
+        <div class="campaign">
+            <div class="campaign-progress">
+                {{ ad.AdName }} | Progress {{ ad.TasksCompleted * 100 // ad.TotalTaskCount }}
+                <div class="progress">
+                    <div class="progress-bar" role="progressbar" style="width: {{ ad.TasksCompleted * 100 // ad.TotalTaskCount }}" aria-valuenow="{{ ad.TasksCompleted * 100 // ad.TotalTaskCount }}" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+            </div>
+            <button class="btn btn-warning" data-toggle="modal" data-target="#campaignModal" data-title="{{ ad.AdName }}" data-tasks='{{ ad.Tasks }}'>View</button>
+        </div>
+        {% endfor %}
+        
+        <hr>
+        
+        <h5>New Requests:</h5>
+        {% for request in ads_requests %}
+        <div class="campaign d-flex justify-content-between align-items-center" style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); padding: 10px; border-radius: 5px; width: 100%; margin-bottom: 10px;">
+            <div class="campaign-progress">
+                {{ request.AdName }} | {{ request.sponsor.Name }}
+            </div>
+            <div class="action-buttons d-flex">
+                <button class="btn btn-warning mr-2">View</button>
+                <button class="btn btn-success mr-2">Accept</button>
+                <button class="btn btn-danger">Reject</button>
+            </div>
+        </div>
+        {% endfor %}
+        
+
+    </div>
+
+
+    <div class="modal fade" id="campaignModal" tabindex="-1" role="dialog" aria-labelledby="campaignModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="campaignModalLabel">Campaign Details</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <h5 id="campaignTitle"></h5>
+                    <div id="taskList"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        $('#campaignModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget); // Button that triggered the modal
+            var title = button.data('title'); // Extract info from data-* attributes
+            var tasks = button.data('tasks'); // Extract tasks
+
+            var modal = $(this);
+            modal.find('.modal-title').text(title);
+
+            var taskListHtml = '';
+            tasks.forEach(function(task) {
+                taskListHtml += '<div class="task-item">' +
+                                '<input type="checkbox" ' + (task.completed ? 'checked' : '') + ' disabled>' +
+                                '<span>' + task.task + '</span>' +
+                                '</div>';
+            });
+
+            modal.find('#taskList').html(taskListHtml);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Influencer's Dashboard</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=PT+Sans+Narrow&display=swap" rel="stylesheet">
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            font-family: 'PT Sans Narrow', sans-serif;
+            background-color: #f8f9fa;
+        }
+        .dashboard-container {
+            padding: 20px;
+            max-width: 900px;
+            margin: 0 auto;
+            background-color: #fff;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            margin-top: 30px;
+        }
+        .navbar {
+            margin-bottom: 20px;
+        }
+        .profile-pic {
+            width: 100px;
+            height: 100px;
+            background-color: #d4f8c4;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        .campaign {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        .campaign-progress {
+            width: 100%;
+            margin-right: 10px;
+        }
+        .action-buttons .btn {
+            margin-left: 5px;
+        }
+        .profile-info {
+            margin-left: 20px;
+        }
+        .modal-body {
+            padding: 20px;
+        }
+        .task-item {
+            margin-bottom: 10px;
+        }
+        .industry-select {
+            width: 150px;
+            margin-right: 10px;
+        }
+        .input-group {
+            flex-wrap: nowrap;
+        }
+        .input-group-append {
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <a class="navbar-brand" href="#">Influencer's Dashboard</a>
+            <div class="collapse navbar-collapse">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item active">
+                        <a class="nav-link" href="{{ url_for('dashboard') }}">Profile</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Find</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Stats</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+        <div class="search-container">
+            <h2>Search for Campaigns</h2>
+            <form class="search-form" action="" method="post">
+                <div class="input-group">
+                    <input type="text" class="form-control" name="search_query" placeholder="Search for campaigns" value="{{ search_query }}">
+                    <select name="industry" class="form-control industry-select">
+                        <option value="">All Industries</option>
+                        {% for industry in industries %}
+                        <option value="{{ industry }}" {% if industry == selected_industry %}selected{% endif %}>{{ industry }}</option>
+                        {% endfor %}
+                    </select>
+                    <div class="input-group-append">
+                        <button class="btn btn-success" type="submit" style="background-color: lightseagreen; color:#fff;">Search</button>
+                    </div>
+                </div>
+            </form><br/><br/>
+            <div class="search-results">
+    {% if campaigns is not none and campaigns|length > 0 %}
+        {% for campaign in campaigns %}
+        <div class="campaign">
+            <div class="campaign-info">
+                <p>{{ campaign.CampaignName }} | {{ campaign.Category }}</p>
+            </div>
+            <div class="action-buttons">
+                <a href="{{ url_for('campaign_details', camp_id = campaign.CampaignID )}}"><button class="btn btn-success">View Details</button></a>
+            </div>
+        </div>
+        {% endfor %}
+    {% elif campaigns is not none %}
+    <div class="alert alert-danger" style="background-color: #f8d7da; color: #721c24; padding: 15px; border-radius: 5px;">
+        <strong>No results found.</strong> Please try a different search term or industry.
+    </div>
+    {% endif %}
+</div>
+
+
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        $('#campaignModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget); // Button that triggered the modal
+            var title = button.data('title'); // Extract info from data-* attributes
+            var tasks = button.data('tasks'); // Extract tasks
+
+            var modal = $(this);
+            modal.find('.modal-title').text(title);
+
+            var taskListHtml = '';
+            tasks.forEach(function(task) {
+                taskListHtml += '<div class="task-item">' +
+                                '<input type="checkbox" ' + (task.completed ? 'checked' : '') + ' disabled>' +
+                                '<span>' + task.task + '</span>' +
+                                '</div>';
+            });
+
+            modal.find('#taskList').html(taskListHtml);
+        });
+    </script>
+</body>
+</html>
